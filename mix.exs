@@ -14,7 +14,8 @@ defmodule Krksmogbot.Mixfile do
   #
   # Type "mix help compile.app" for more information
   def application do
-    [applications: [:logger]]
+    [applications: [:logger, :nadia, :httpoison],
+     mod: {Krksmogbot, []}]
   end
 
   # Dependencies can be Hex packages:
@@ -27,6 +28,7 @@ defmodule Krksmogbot.Mixfile do
   #
   # Type "mix help deps" for more examples and options
   defp deps do
-    []
+    [{:nadia, "~> 0.4.2"},
+     {:httpoison, "~> 0.13"}]
   end
 end
