@@ -1,0 +1,2 @@
+defmodule Krksmogbot do
+end
