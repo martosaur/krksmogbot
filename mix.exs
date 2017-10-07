@@ -14,7 +14,7 @@ defmodule Krksmogbot.Mixfile do
   #
   # Type "mix help compile.app" for more information
   def application do
-    [applications: [:logger, :nadia, :httpoison],
+    [applications: [:logger, :nadia, :httpoison, :cowboy, :plug],
      mod: {Krksmogbot, []}]
   end
 
@@ -29,6 +29,9 @@ defmodule Krksmogbot.Mixfile do
   # Type "mix help deps" for more examples and options
   defp deps do
     [{:nadia, "~> 0.4.2"},
-     {:httpoison, "~> 0.13"}]
+     {:httpoison, "~> 0.13"},
+     {:distillery, "~> 1.0.0"},
+     {:cowboy, "~> 1.1.2"},
+     {:plug, "~> 1.3.4"},]
   end
 end
