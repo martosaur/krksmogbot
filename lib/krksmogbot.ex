@@ -6,7 +6,8 @@ defmodule Krksmogbot do
 
         children = [
             worker(Krksmogbot.Poller, []),
-            worker(Krksmogbot.Matcher, [])
+            worker(Krksmogbot.Matcher, []),
+            Plug.Adapters.Cowboy.child_spec(:http, Krksmogbot.Healthcheck, [], port: 4000)
         ]
 
         opts = [strategy: :one_for_one, name: Krksmogbot.Supervisor]
