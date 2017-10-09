@@ -32,6 +32,7 @@ defmodule Krksmogbot.Mixfile do
      {:httpoison, "~> 0.13"},
      {:distillery, "~> 1.0.0"},
      {:cowboy, "~> 1.1.2"},
-     {:plug, "~> 1.3.4"},]
+     {:plug, "~> 1.3.4"},
+     {:credo, "~> 0.8", only: [:dev, :test], runtime: false}]
   end
 end
