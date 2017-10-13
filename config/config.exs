@@ -32,3 +32,5 @@ config :krksmogbot,
     airly_token: {:system, "AIRLY_API_TOKEN"}
 config :nadia,
     token: {:system, "NADIA_BOT_TOKEN"}
+# Import Timber, structured logging
+import_config "timber.exs"
