@@ -14,7 +14,7 @@ defmodule Krksmogbot.Mixfile do
   #
   # Type "mix help compile.app" for more information
   def application do
-    [applications: [:logger, :nadia, :httpoison, :cowboy, :plug],
+    [applications: [:logger, :nadia, :httpoison, :cowboy, :plug, :timber],
      mod: {Krksmogbot, []}]
   end
 
@@ -33,6 +33,7 @@ defmodule Krksmogbot.Mixfile do
      {:distillery, "~> 1.0.0"},
      {:cowboy, "~> 1.1.2"},
      {:plug, "~> 1.3.4"},
+     {:timber, "~> 2.5"},
      {:credo, "~> 0.8", only: [:dev, :test], runtime: false}]
   end
 end
