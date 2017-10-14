@@ -7,6 +7,7 @@ defmodule Krksmogbot do
         children = [
             worker(Krksmogbot.Poller, []),
             worker(Krksmogbot.Matcher, []),
+            worker(Botan, []),
             Plug.Adapters.Cowboy.child_spec(:http, Krksmogbot.Healthcheck, [], port: 4000)
         ]
 
