@@ -29,7 +29,8 @@ use Mix.Config
 #
 #     import_config "#{Mix.env}.exs"
 config :krksmogbot,
-    airly_token: {:system, "AIRLY_API_TOKEN"}
+    airly_token: {:system, "AIRLY_API_TOKEN"},
+    botan_token: {:system, "BOTAN_API_TOKEN"}
 config :nadia,
     token: {:system, "NADIA_BOT_TOKEN"}
 # Import Timber, structured logging

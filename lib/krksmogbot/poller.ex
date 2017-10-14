@@ -56,6 +56,7 @@ defmodule Krksmogbot.Poller do
     defp process_message(nil), do: IO.puts "nil"
     defp process_message(message) do
       try do
+        Botan.track message
         Krksmogbot.Matcher.match message
       rescue
         err -> Logger.log :warn, err

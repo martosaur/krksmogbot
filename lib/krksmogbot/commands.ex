@@ -23,7 +23,7 @@ defmodule Krksmogbot.Commands do
             _ -> @help_msg |> send_message_with_keyboard(msg)
         end
     end
-    def match(backoff), do: Logger.log :error, "Unmatched message #{Poison.encode!(backoff)}"
+    def match(backoff), do: Logger.log :error, "Unmatched message #{inspect(backoff)}"
     
     defp send_message_with_keyboard(text, %{chat: %{id: chat_id}}, options \\ []) do
         Nadia.send_message(chat_id, text,
