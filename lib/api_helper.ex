@@ -1,5 +1,4 @@
 defmodule API.Helper do
-    
     def config_or_env(key) do
         case Application.fetch_env(:krksmogbot, key) do
           {:ok, {:system, var}} -> System.get_env(var)
@@ -11,6 +10,5 @@ defmodule API.Helper do
           {:ok, value} -> value
           :error -> nil
         end
-    end
-    
+    end 
 end
