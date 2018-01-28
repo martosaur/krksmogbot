@@ -41,12 +41,12 @@ defmodule Krksmogbot.Poller do
     |> List.last
   end
   defp process_messages({:error, %Nadia.Model.Error{reason: reason}}) do
-    Logger.error(reason)
+    Logger.error("Error polling updates: #{inspect(reason)}")
   
     -1
   end
   defp process_messages({:error, error}) do
-    Logger.error(error)
+    Logger.error("Error polling updates: #{inspect(error)}")
   
     -1
   end
