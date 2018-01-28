@@ -17,10 +17,13 @@ defmodule Krksmogbot.Measurements do
     with {:ok, %{"currentMeasurements" => data}} <- Airlyapi.get_map_point_measurements(latitude, longitude) do
       measurements_to_text(data)
     else
-      {:error, reason} -> Logger.error(reason)
+      {:error, reason} -> Logger.error("Error accessing Airly: #{inspect(reason)}")
     end
   end
   
+  defp measurements_to_text(data) when map_size(data) == 0 do
+    "Sorry, there's no data for your location"
+  end
   defp measurements_to_text(data) do
     [to_message(:caqi, data["airQualityIndex"], data["pollutionLevel"]),
      to_message(:pm25, data["pm25"]),

@@ -20,7 +20,7 @@ defmodule Botan.API do
   defp process_response_body(body) do
     case Poison.decode(body) do
       {:ok, body} -> body
-      {:error, error} -> Logger.error(inspect(error))
+      {:error, error} -> Logger.error("Error decoding Botan response body: #{inspect(error)}")
                           body
     end
   end
@@ -28,7 +28,7 @@ defmodule Botan.API do
   def track(uid, command, message) do
     case post("/track", message, [], [params: [uid: uid, name: command]]) do
       {:ok, response} -> {:ok, response}
-      {:error, response} -> Logger.error(inspect(response))
+      {:error, response} -> Logger.error("Error posting message to Botan: #{inspect(response)}")
                               {:error, response}
     end
   end
