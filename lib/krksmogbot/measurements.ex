@@ -14,21 +14,24 @@ defmodule Krksmogbot.Measurements do
   }
   
   def get_measurements(latitude, longitude) do
-    with {:ok, %{"currentMeasurements" => data}} <- Airlyapi.get_map_point_measurements(latitude, longitude) do
-      measurements_to_text(data)
+    with {:ok, %{"currentMeasurements" => data, "history" => [previous_data | _]}} <- Airlyapi.get_map_point_measurements(latitude, longitude) do
+      measurements_to_text(data, previous_data)
     else
       {:error, reason} -> Logger.error("Error accessing Airly: #{inspect(reason)}")
     end
   end
-  
-  defp measurements_to_text(data) when map_size(data) == 0 do
+
+  defp measurements_to_text(data, _) when map_size(data) == 0 do
     "Sorry, there's no data for your location"
   end
-  defp measurements_to_text(data) do
-    [to_message(:caqi, data["airQualityIndex"], data["pollutionLevel"]),
-     to_message(:pm25, data["pm25"]),
-     to_message(:pm10, data["pm10"]),
-     to_message(:temp, data["temperature"])]
+  defp measurements_to_text(data, previous_data) do
+    [
+      to_message(:caqi, data["airQualityIndex"], data["pollutionLevel"]),
+      to_message(:yesterday, data["pollutionLevel"] - previous_data["measurements"]["pollutionLevel"]),
+      to_message(:pm25, data["pm25"]),
+      to_message(:pm10, data["pm10"]),
+      to_message(:temp, data["temperature"])
+    ]
     |> Enum.join("\n")
   end
   
@@ -37,6 +40,19 @@ defmodule Krksmogbot.Measurements do
   defp to_message(:temp, nil), do:  "*Temperature*:"
   defp to_message(:temp, data), do: "*Temperature*: #{round(data)}°C"
   defp to_message(:caqi, caqi, level), do: "*CAQI*: #{if caqi, do: round(caqi)} *#{if level, do: @pollution_level[level] |> Enum.random()}*"
+  defp to_message(:yesterday, -6), do: "*Better than yesterday* 💚💚💚💚💚💚"
+  defp to_message(:yesterday, -5), do: "*Better than yesterday* 💚💚💚💚💚"
+  defp to_message(:yesterday, -4), do: "*Better than yesterday* 💚💚💚💚"
+  defp to_message(:yesterday, -3), do: "*Better than yesterday* 💚💚💚"
+  defp to_message(:yesterday, -2), do: "*Better than yesterday* 💚💚"
+  defp to_message(:yesterday, -1), do: "*Better than yesterday* 💚"
+  defp to_message(:yesterday, 0), do: "*Same as yesterday*"
+  defp to_message(:yesterday, 1), do: "*Worse than yesterday* ❗️"
+  defp to_message(:yesterday, 2), do: "*Worse than yesterday* ❗️❗️"
+  defp to_message(:yesterday, 3), do: "*Worse than yesterday* ❗️❗️❗️"
+  defp to_message(:yesterday, 4), do: "*Worse than yesterday* ❗️❗️❗️❗️"
+  defp to_message(:yesterday, 5), do: "*Worse than yesterday* ❗️❗️❗️❗️❗️"
+  defp to_message(:yesterday, 6), do: "*Worse than yesterday* ❗️❗️❗️❗️❗️❗️"
   
   defp percentage_of_norm(nil, _), do: ""
   defp percentage_of_norm(data, norm) do
