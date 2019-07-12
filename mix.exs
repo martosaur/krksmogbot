@@ -2,20 +2,21 @@ defmodule Krksmogbot.Mixfile do
   use Mix.Project
 
   def project do
-    [app: :krksmogbot,
-     version: "0.1.0",
-     elixir: "~> 1.3",
-     build_embedded: Mix.env == :prod,
-     start_permanent: Mix.env == :prod,
-     deps: deps()]
+    [
+      app: :krksmogbot,
+      version: "0.2.0",
+      elixir: "~> 1.9",
+      build_embedded: Mix.env() == :prod,
+      start_permanent: Mix.env() == :prod,
+      deps: deps()
+    ]
   end
 
   # Configuration for the OTP application
   #
   # Type "mix help compile.app" for more information
   def application do
-    [applications: [:logger, :nadia, :httpoison, :cowboy, :plug, :timber],
-     mod: {Krksmogbot, []}]
+    [applications: [:logger, :nadia, :httpoison, :cowboy, :plug], mod: {Krksmogbot, []}]
   end
 
   # Dependencies can be Hex packages:
@@ -28,12 +29,11 @@ defmodule Krksmogbot.Mixfile do
   #
   # Type "mix help deps" for more examples and options
   defp deps do
-    [{:nadia, "~> 0.4.2"},
-     {:httpoison, "~> 0.13"},
-     {:distillery, "~> 1.0.0"},
-     {:cowboy, "~> 1.1.2"},
-     {:plug, "~> 1.3.4"},
-     {:timber, "~> 2.5"},
-     {:credo, "~> 0.8", only: [:dev, :test], runtime: false}]
+    [
+      {:nadia, "~> 0.4.2"},
+      {:httpoison, "~> 0.13"},
+      {:cowboy, "~> 1.1.2"},
+      {:plug, "~> 1.3.4"}
+    ]
   end
 end

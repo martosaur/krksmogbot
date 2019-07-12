@@ -1,46 +1,51 @@
 defmodule Krksmogbot.Measurements do
   require Logger
-  
-  @pm25_norm 25
-  @pm10_norm 50
-  @pollution_level %{
-    0 => ["No current data"],
-    1 => ["Wonderful!", "Great air here today!"],
-    2 => ["Air quality is fine.", "Acceptable."],
-    3 => ["Well… It’s been better.", "Above daily WHO recommendations."],
-    4 => ["Poor air quality!", "Bad air quality!"],
-    5 => ["Air pollution is way over the limit.", "ExtremAIRly poor."],
-    6 => ["AIRmageddon!", "DisAIRster!"],
-  }
-  
+
   def get_measurements(latitude, longitude) do
-    with {:ok, %{"currentMeasurements" => data, "history" => [previous_data | _]}} <- Airlyapi.get_map_point_measurements(latitude, longitude) do
+    with {:ok, %{"current" => data, "history" => [previous_data | _]}} <-
+           Airlyapi.get_map_point_measurements(latitude, longitude) do
       measurements_to_text(data, previous_data)
     else
-      {:error, reason} -> Logger.error("Error accessing Airly: #{inspect(reason)}")
+      {_, error} -> Logger.error("Error accessing Airly: #{inspect(error)}")
     end
   end
 
   defp measurements_to_text(data, _) when map_size(data) == 0 do
     "Sorry, there's no data for your location"
   end
-  defp measurements_to_text(data, previous_data) do
+
+  defp measurements_to_text(
+         %{"indexes" => [data], "standards" => [pm25, pm10], "values" => values},
+         %{"indexes" => [yesterday_data]}
+       ) do
     [
-      to_message(:caqi, data["airQualityIndex"], data["pollutionLevel"]),
-      to_message(:yesterday, data["pollutionLevel"] - previous_data["measurements"]["pollutionLevel"]),
-      to_message(:pm25, data["pm25"]),
-      to_message(:pm10, data["pm10"]),
-      to_message(:temp, data["temperature"])
+      to_message(:caqi, data["value"], data["description"], data["advice"]),
+      to_message(
+        :yesterday,
+        round(data["value"] - yesterday_data["value"]) |> div(10)
+      ),
+      to_message(:pm25, pm25),
+      to_message(:pm10, pm10),
+      to_message(
+        :temp,
+        values
+        |> Enum.find(fn
+          %{"name" => "TEMPERATURE"} -> true
+          _ -> false
+        end)
+      )
     ]
     |> Enum.join("\n")
   end
-  
-  defp to_message(:pm25, data), do: "*PM25*: #{percentage_of_norm(data, @pm25_norm)}"
-  defp to_message(:pm10, data), do: "*PM10*: #{percentage_of_norm(data, @pm10_norm)}"
-  defp to_message(:temp, nil), do:  "*Temperature*:"
-  defp to_message(:temp, data), do: "*Temperature*: #{round(data)}°C"
-  defp to_message(:caqi, caqi, level), do: "*CAQI*: #{if caqi, do: round(caqi)} *#{if level, do: @pollution_level[level] |> Enum.random()}*"
-  defp to_message(:yesterday, -6), do: "*Better than yesterday* 💚💚💚💚💚💚"
+
+  defp to_message(:caqi, caqi, description, advice),
+    do: "*CAQI*: #{if caqi, do: round(caqi)} *#{description}*\n#{advice}"
+
+  defp to_message(:pm25, %{"pollutant" => "PM25", "percent" => percent}), do: "*PM25*: #{percent}"
+  defp to_message(:pm10, %{"pollutant" => "PM10", "percent" => percent}), do: "*PM10*: #{percent}"
+  defp to_message(:temp, nil), do: "*Temperature*:"
+  defp to_message(:temp, %{"value" => temp}), do: "*Temperature*: #{round(temp)}°C"
+  defp to_message(:yesterday, diff) when diff < -5, do: "*Better than yesterday* 💚💚💚💚💚💚"
   defp to_message(:yesterday, -5), do: "*Better than yesterday* 💚💚💚💚💚"
   defp to_message(:yesterday, -4), do: "*Better than yesterday* 💚💚💚💚"
   defp to_message(:yesterday, -3), do: "*Better than yesterday* 💚💚💚"
@@ -52,13 +57,5 @@ defmodule Krksmogbot.Measurements do
   defp to_message(:yesterday, 3), do: "*Worse than yesterday* ❗️❗️❗️"
   defp to_message(:yesterday, 4), do: "*Worse than yesterday* ❗️❗️❗️❗️"
   defp to_message(:yesterday, 5), do: "*Worse than yesterday* ❗️❗️❗️❗️❗️"
-  defp to_message(:yesterday, 6), do: "*Worse than yesterday* ❗️❗️❗️❗️❗️❗️"
-  
-  defp percentage_of_norm(nil, _), do: ""
-  defp percentage_of_norm(data, norm) do
-    data / norm * 100
-    |> Float.round(2)
-    |> to_string
-    |> Kernel.<>("%")
-  end
+  defp to_message(:yesterday, diff) when diff > 5, do: "*Worse than yesterday* ❗️❗️❗️❗️❗️❗️"
 end

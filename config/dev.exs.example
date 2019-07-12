@@ -1,0 +1,7 @@
+import Config
+
+config :krksmogbot,
+  airly_token: airly_token
+
+config :nadia,
+  token: nadia_token
