@@ -4,11 +4,16 @@ defmodule Krksmogbot.Mixfile do
   def project do
     [
       app: :krksmogbot,
-      version: "0.2.0",
+      version: "0.2.1",
       elixir: "~> 1.9",
       build_embedded: Mix.env() == :prod,
       start_permanent: Mix.env() == :prod,
-      deps: deps()
+      deps: deps(),
+      releases: [
+        krksmogbot: [
+          include_executablesfor: [:unix]
+        ]
+      ]
     ]
   end
 
