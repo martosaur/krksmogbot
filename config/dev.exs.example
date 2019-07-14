@@ -1,7 +1,11 @@
 import Config
 
 config :krksmogbot,
-  airly_token: airly_token
+  airly_token: "token",
+  use_webhook: "false",
+  webhook_token: "secret",
+  webhook_url: "https://localhost/",
+  webhook_max_connections: 1
 
 config :nadia,
   token: nadia_token

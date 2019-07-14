@@ -4,17 +4,17 @@ defmodule Airlyapi do
 
   defp api_token, do: Application.get_env(:krksmogbot, :airly_token)
 
-  defp process_url(url) do
+  def process_url(url) do
     "https://airapi.airly.eu" <> url
   end
 
-  defp process_request_headers(headers) do
+  def process_request_headers(headers) do
     headers
     |> Keyword.put(:apikey, api_token())
   end
 
-  defp process_response_body(body) do
-    Poison.decode!(body)
+  def process_response_body(body) do
+    Jason.decode!(body)
   end
 
   def get_map_point_measurements(latitude, longitude) do

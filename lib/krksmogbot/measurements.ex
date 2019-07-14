@@ -41,8 +41,12 @@ defmodule Krksmogbot.Measurements do
   defp to_message(:caqi, caqi, description, advice),
     do: "*CAQI*: #{if caqi, do: round(caqi)} *#{description}*\n#{advice}"
 
-  defp to_message(:pm25, %{"pollutant" => "PM25", "percent" => percent}), do: "*PM25*: #{percent}%"
-  defp to_message(:pm10, %{"pollutant" => "PM10", "percent" => percent}), do: "*PM10*: #{percent}%"
+  defp to_message(:pm25, %{"pollutant" => "PM25", "percent" => percent}),
+    do: "*PM25*: #{percent}%"
+
+  defp to_message(:pm10, %{"pollutant" => "PM10", "percent" => percent}),
+    do: "*PM10*: #{percent}%"
+
   defp to_message(:temp, nil), do: "*Temperature*:"
   defp to_message(:temp, %{"value" => temp}), do: "*Temperature*: #{round(temp)}°C"
   defp to_message(:yesterday, diff) when diff < -5, do: "*Better than yesterday* 💚💚💚💚💚💚"

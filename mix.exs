@@ -4,7 +4,7 @@ defmodule Krksmogbot.Mixfile do
   def project do
     [
       app: :krksmogbot,
-      version: "0.2.1",
+      version: "0.3.0",
       elixir: "~> 1.9",
       build_embedded: Mix.env() == :prod,
       start_permanent: Mix.env() == :prod,
@@ -21,7 +21,7 @@ defmodule Krksmogbot.Mixfile do
   #
   # Type "mix help compile.app" for more information
   def application do
-    [applications: [:logger, :nadia, :httpoison, :cowboy, :plug], mod: {Krksmogbot, []}]
+    [extra_applications: [:logger], mod: {Krksmogbot, []}]
   end
 
   # Dependencies can be Hex packages:
@@ -35,10 +35,10 @@ defmodule Krksmogbot.Mixfile do
   # Type "mix help deps" for more examples and options
   defp deps do
     [
-      {:nadia, "~> 0.4.2"},
-      {:httpoison, "~> 0.13"},
-      {:cowboy, "~> 1.1.2"},
-      {:plug, "~> 1.3.4"}
+      {:nadia, git: "https://github.com/zhyu/nadia.git"},
+      {:httpoison, "~> 1.5.1"},
+      {:plug_cowboy, "~> 2.1"},
+      {:jason, "~> 1.1"}
     ]
   end
 end
